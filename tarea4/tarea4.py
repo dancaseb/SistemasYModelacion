@@ -32,7 +32,6 @@ class Car:
         if self.speed >= 1 and random.random() < self.distraction_probability:
             self.speed -= 1
         
-
     def move(self):
         self.position += self.speed
         self.position %= vector_length
@@ -44,22 +43,18 @@ class Simulation:
         random_positions = np.random.choice(vector_length, num_cars, replace=False)
         random_positions.sort()
         self.cars = [Car(np.random.randint(1, max_speed + 1), random_positions[i], distraction_probability, np.random.uniform(0,0.9,size=3)) for i in range(num_cars)]
-        # self.matrix[0, [car.position for car in self.cars]] = [car.speed for car in self.cars] # initial state
         self.grid = np.ones((iterations, vector_length, 3)) # grid for plotting the cars
-        # self.grid[0, [car.position for car in self.cars]] = [car.colour for car in self.cars]
 
 
     def simulate(self, step):
         for index, car in enumerate(self.cars):
             car_ahead_position = self.cars[(index + 1) % num_cars].position
             car.calculate_speed(car_ahead_position)
-        self.matrix[step, [car.position for car in self.cars]] = [car.speed for car in self.cars] # initial state
-        self.grid[step, [car.position for car in self.cars]] = [car.colour for car in self.cars]
+        self.matrix[step, [car.position for car in self.cars]] = [car.speed for car in self.cars] # update computational matrix
+        self.grid[step, [car.position for car in self.cars]] = [car.colour for car in self.cars] # update plotting matrix
 
         for car in self.cars:
             car.move()
-        # self.matrix[step, [car.position for car in self.cars]] = [car.speed for car in self.cars] # update computational matrix
-        # self.grid[step, [car.position for car in self.cars]] = [car.colour for car in self.cars] # update plotting matrix
     
     def plot_simulation(self):
         fig, ax = plt.subplots()
